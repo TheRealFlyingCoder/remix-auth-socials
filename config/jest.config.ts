@@ -1,6 +1,4 @@
 import type { Config } from "@jest/types";
-// eslint-disable-next-line unicorn/prefer-node-protocol
-// eslint-disable-next-line unicorn/import-style
 import * as path from "path";
 
 const config: Config.InitialOptions = {

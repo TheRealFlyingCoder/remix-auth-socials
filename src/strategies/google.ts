@@ -1,9 +1,9 @@
 import type { StrategyVerifyCallback } from 'remix-auth';
-import type {
+import {
 	OAuth2Profile,
 	OAuth2StrategyVerifyParams,
+  OAuth2Strategy
 } from 'remix-auth-oauth2';
-import { OAuth2Strategy } from 'remix-auth-oauth2';
 import { SocialsProvider } from '..';
 
 export type GoogleStrategyOptions = {

@@ -7,11 +7,11 @@ Current strategies:
 -   Discord
 -   Github
 -   Google
-
+-   Facebook
+  
 Planned:
 
 -   Twitter
--   Facebook
 -   Apple
 -   LinkedIn
 -   Microsoft
@@ -43,7 +43,7 @@ import { authenticator } from '~/auth.server';
 export let loader: LoaderFunction = () => redirect('/login');
 
 export let action: ActionFunction = ({ request, params }) => {
-	return authenticator.authenticate(params.provider, request);
+  return authenticator.authenticate(params.provider, request);
 };
 ```
 
@@ -53,10 +53,10 @@ import { ActionFunction, LoaderFunction } from 'remix';
 import { authenticator } from '~/auth.server';
 
 export let loader: LoaderFunction = ({ request, params }) => {
-	return authenticator.authenticate(params.provider, request, {
-		successRedirect: '/dashboard',
-		failureRedirect: '/login',
-	});
+  return authenticator.authenticate(params.provider, request, {
+    successRedirect: '/dashboard',
+    failureRedirect: '/login',
+  });
 };
 ```
 
@@ -67,22 +67,22 @@ Now you are free to include social buttons on the login page however you like
 import { SocialProvider } from 'remix-auth-socials';
 
 interface SocialButtonProps {
-   provider: SocialProvider,
-   label: string
+  provider: SocialProvider,
+  label: string
 }
 
 const SocialButton: React.FC<SocialButtonProps> = ({ provider, label }) => (
-   <Form action={`/auth/${provider}`} method="post">
-      <button>{label}</button>
-   </Form>
+  <Form action={`/auth/${provider}`} method="post">
+    <button>{label}</button>
+  </Form>
 );
 
 export default function Login() {
-   return (
-      <SocialButton provider={SocialProvider.GITHUB} label="Login with Github" />
-      <SocialButton provider={SocialProvider.GOOGLE} label="Login with Google" />
-      <SocialButton provider={SocialProvider.DISCORD} label="Login with Discord" />
-   );
+  return (
+    <SocialButton provider={SocialProvider.GITHUB} label="Login with Github" />
+    <SocialButton provider={SocialProvider.GOOGLE} label="Login with Google" />
+    <SocialButton provider={SocialProvider.DISCORD} label="Login with Discord" />
+  );
 }
 ```
 ### Create the strategy instance

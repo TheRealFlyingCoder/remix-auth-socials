@@ -127,6 +127,7 @@ export type FacebookStrategyOptions = {
 	extraProfileFields?: Array<AdditionalFacebookProfileField>;
 };
 
+//TODO: Each field has a specific return type which we can map eventually
 export type FacebookProfile = {
 	id: string;
 	displayName: string;

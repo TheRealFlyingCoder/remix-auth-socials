@@ -1,6 +1,6 @@
 # Remix Auth Socials
 
-> A collection Remix Auth strategies for Oauth2 Social logins.
+> A collection of Remix Auth strategies for Oauth2 Social logins.
 
 👷 If you are interested in creating one of the planned strategies, or maintaining an existing one reach out! 👷
 
@@ -94,7 +94,8 @@ For each social you want to use, you must initialise it in your `auth.server.ts`
 
 ```ts
 // app/server/auth.server.ts
-import { GoogleStrategy, FacebookStrategy } from "remix-auth-socials";
+import { GoogleStrategy, FacebookStrategy, SocialProvider } from "remix-auth-socials";
+import { findOrCreateOauth2User } from "./db.server.ts";
 
 // Create an instance of the authenticator, pass a generic <User> type which the
 // strategies will return (this will be stored in the session)
@@ -104,10 +105,10 @@ authenticator.use(new GoogleStrategy(
   {
     clientID: "YOUR_CLIENT_ID",
     clientSecret: "YOUR_CLIENT_SECRET",
-    callbackURL: "https://example.com/auth/example/callback";
+    callbackURL: `https://example.com/auth/${SocialProvider.GOOGLE}/callback`;
   },
   async ({ profile }) => {
-    return findOrCreateOauth2(profile);
+    return findOrCreateOauth2User(profile);
   }
 ));
 
@@ -115,10 +116,10 @@ authenticator.use(new FacebookStrategy(
   {
     clientID: "YOUR_CLIENT_ID",
     clientSecret: "YOUR_CLIENT_SECRET",
-    callbackURL: "https://example.com/auth/example/callback";
+    callbackURL: `https://example.com/auth/${SocialProvider.FACEBOOK}/callback`;
   },
   async ({ profile }) => {
-    return findOrCreateOauth2(profile);
+    return findOrCreateOauth2User(profile);
   }
 ));
 ```

@@ -105,6 +105,9 @@ export const baseProfileFields = [
 	'last_name',
 ];
 
+export const FacebookDefaultScopes: FacebookScope[] = ['public_profile', 'email'];
+export const FacebookScopeSeperator = ',';
+
 export type FacebookStrategyOptions = {
 	clientID: string;
 	clientSecret: string;
@@ -115,7 +118,7 @@ export type FacebookStrategyOptions = {
 	 * See all the possible scopes:
 	 * @see https://developers.facebook.com/docs/permissions/reference
 	 */
-	scope?: Array<FacebookScope> | string;
+	scope?: FacebookScope[];
 	/**
 	 * Additional fields that will show up in the profile._json object
 	 *
@@ -148,7 +151,7 @@ export class FacebookStrategy<User> extends OAuth2Strategy<
 	FacebookExtraParams
 > {
 	public name = SocialsProvider.FACEBOOK;
-	private readonly scope: Array<FacebookScope>;
+	private readonly scope: FacebookScope[];
 	private readonly profileFields: string[];
 
 	private readonly userInfoURL = 'https://graph.facebook.com/me';
@@ -176,11 +179,7 @@ export class FacebookStrategy<User> extends OAuth2Strategy<
 			},
 			verify,
 		);
-		this.scope = !!scope
-			? Array.isArray(scope)
-				? scope
-				: (scope.split(',') as Array<FacebookScope>)
-			: ['public_profile', 'email'];
+		this.scope = scope || FacebookDefaultScopes;
 		//Ensure unique entries in case they include the base fields
 		this.profileFields = Array.from(
 			new Set([...baseProfileFields, ...(extraProfileFields || [])]),
@@ -189,7 +188,7 @@ export class FacebookStrategy<User> extends OAuth2Strategy<
 
 	protected authorizationParams(): URLSearchParams {
 		const params = new URLSearchParams({
-			scope: this.scope.join(','),
+			scope: this.scope.join(FacebookScopeSeperator),
 		});
 
 		return params;

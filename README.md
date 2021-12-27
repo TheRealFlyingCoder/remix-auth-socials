@@ -2,19 +2,21 @@
 
 > A collection Remix Auth strategies for Oauth2 Social logins.
 
+👷 If you are interested in creating one of the planned strategies, or maintaining an existing one reach out! 👷
+
 Current strategies:
 
 -   Discord
 -   Github
 -   Google
 -   Facebook
+-   Microsoft
   
 Planned:
 
 -   Twitter
 -   Apple
 -   LinkedIn
--   Microsoft
 -   Instagram
 -   Reddit
 
@@ -79,9 +81,11 @@ const SocialButton: React.FC<SocialButtonProps> = ({ provider, label }) => (
 
 export default function Login() {
   return (
+    <SocialButton provider={SocialProvider.DISCORD} label="Login with Discord" />
     <SocialButton provider={SocialProvider.GITHUB} label="Login with Github" />
     <SocialButton provider={SocialProvider.GOOGLE} label="Login with Google" />
-    <SocialButton provider={SocialProvider.DISCORD} label="Login with Discord" />
+    <SocialButton provider={SocialProvider.FACEBOOK} label="Login with Facebook" />
+    <SocialButton provider={SocialProvider.MICROSOFT} label="Login with Microsoft" />
   );
 }
 ```
@@ -89,20 +93,34 @@ export default function Login() {
 For each social you want to use, you must initialise it in your `auth.server.ts` file.
 
 ```ts
-import { ExampleStrategy } from "remix-auth-socials";
+// app/server/auth.server.ts
+import { GoogleStrategy, FacebookStrategy } from "remix-auth-socials";
 
-let exampleStrategy = new ExampleStrategy(
+// Create an instance of the authenticator, pass a generic <User> type which the
+// strategies will return (this will be stored in the session)
+export let authenticator = new Authenticator<User>(sessionStorage, { sessionErrorKey });
+
+authenticator.use(new GoogleStrategy(
   {
     clientID: "YOUR_CLIENT_ID",
     clientSecret: "YOUR_CLIENT_SECRET",
     callbackURL: "https://example.com/auth/example/callback";
   },
-  async (accessToken, _, extraParams, profile) => {
-    return User.findOrCreate({ email: profile.emails[0].value });
+  async ({ profile }) => {
+    return findOrCreateOauth2(profile);
   }
-);
+));
 
-authenticator.use(exampleStrategy);
+authenticator.use(new FacebookStrategy(
+  {
+    clientID: "YOUR_CLIENT_ID",
+    clientSecret: "YOUR_CLIENT_SECRET",
+    callbackURL: "https://example.com/auth/example/callback";
+  },
+  async ({ profile }) => {
+    return findOrCreateOauth2(profile);
+  }
+));
 ```
 
-TODO: Create readme doc for each strategy and link here
+TODO: Create readme doc for each strategy to show options and link here

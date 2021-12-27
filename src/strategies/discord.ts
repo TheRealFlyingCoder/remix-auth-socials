@@ -45,7 +45,7 @@ export interface DiscordStrategyOptions {
 	 * See all the possible scopes:
 	 * @see https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes
 	 */
-	scope?: Array<DiscordScope> | string;
+	scope?: DiscordScope[];
 	prompt?: 'none' | 'consent';
 }
 
@@ -130,8 +130,11 @@ export interface DiscordExtraParams
 	extends Record<string, Array<DiscordScope> | string | number> {
 	expires_in: 604_800;
 	token_type: 'Bearer';
-	scope: Array<DiscordScope>;
+	scope: string;
 }
+
+export const DiscordDefaultScopes: DiscordScope[] = ['identify', 'email'];
+export const DiscordScopeSeperator = ' ';
 
 export class DiscordStrategy<User> extends OAuth2Strategy<
 	User,
@@ -140,7 +143,7 @@ export class DiscordStrategy<User> extends OAuth2Strategy<
 > {
 	name = SocialsProvider.DISCORD;
 
-	private scope: Array<DiscordScope>;
+	private scope: DiscordScope[];
 	private prompt?: 'none' | 'consent';
 	private userInfoURL = 'https://discord.com/api/users/@me';
 
@@ -168,16 +171,13 @@ export class DiscordStrategy<User> extends OAuth2Strategy<
 			verify,
 		);
 
-		if (!scope) this.scope = ['identify', 'email'];
-		else if (Array.isArray(scope)) this.scope = scope;
-		else this.scope = scope.split(' ') as Array<DiscordScope>;
-
+		this.scope = scope || DiscordDefaultScopes;
 		this.prompt = prompt;
 	}
 
 	protected authorizationParams() {
 		const params = new URLSearchParams({
-			scope: this.scope.join(' '),
+			scope: this.scope.join(DiscordScopeSeperator),
 		});
 		if (this.prompt) params.set('prompt', this.prompt);
 		return params;

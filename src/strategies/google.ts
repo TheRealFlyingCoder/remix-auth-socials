@@ -6,6 +6,11 @@ import {
 } from 'remix-auth-oauth2';
 import { SocialsProvider } from '..';
 
+export type GoogleScope =
+    | 'openid'
+    | 'email'
+    | 'profile'
+
 export type GoogleStrategyOptions = {
 	clientID: string;
 	clientSecret: string;
@@ -13,7 +18,7 @@ export type GoogleStrategyOptions = {
 	/**
 	 * @default "openid profile email"
 	 */
-	scope?: string;
+	scope?: GoogleScope[];
 	accessType?: 'online' | 'offline';
 	includeGrantedScopes?: boolean;
 	prompt?: 'none' | 'consent' | 'select_account';
@@ -48,6 +53,9 @@ export type GoogleExtraParams = {
 	id_token: string;
 } & Record<string, string | number>;
 
+export const GoogleDefaultScopes: GoogleScope[] = ['openid', 'profile', 'email'];
+export const GoogleScopeSeperator = ' ';
+
 export class GoogleStrategy<User> extends OAuth2Strategy<
 	User,
 	GoogleProfile,
@@ -55,7 +63,7 @@ export class GoogleStrategy<User> extends OAuth2Strategy<
 > {
 	public name = SocialsProvider.GOOGLE;
 
-	private readonly scope: string;
+	private readonly scope: GoogleScope[];
 
 	private readonly accessType: string;
 
@@ -92,7 +100,7 @@ export class GoogleStrategy<User> extends OAuth2Strategy<
 			},
 			verify,
 		);
-		this.scope = scope ?? 'openid profile email';
+		this.scope = scope || GoogleDefaultScopes;
 		this.accessType = accessType ?? 'online';
 		this.includeGrantedScopes = includeGrantedScopes ?? false;
 		this.prompt = prompt;
@@ -100,7 +108,7 @@ export class GoogleStrategy<User> extends OAuth2Strategy<
 
 	protected authorizationParams(): URLSearchParams {
 		const params = new URLSearchParams({
-			scope: this.scope,
+			scope: this.scope.join(GoogleScopeSeperator),
 			access_type: this.accessType,
 			include_granted_scopes: String(this.includeGrantedScopes),
 		});

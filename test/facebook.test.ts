@@ -1,5 +1,5 @@
 import { createCookieSessionStorage } from '@remix-run/server-runtime';
-import { FacebookStrategy } from '../src';
+import { FacebookDefaultScopes, FacebookScopeSeperator, FacebookStrategy } from '../src';
 
 describe(FacebookStrategy, () => {
 	const verify = jest.fn();
@@ -17,7 +17,7 @@ describe(FacebookStrategy, () => {
 				clientID: 'CLIENT_ID',
 				clientSecret: 'CLIENT_SECRET',
 				callbackURL: 'https://example.app/callback',
-				scope: 'custom',
+				scope: ['ads_read'],
 			},
 			verify,
 		);
@@ -36,11 +36,11 @@ describe(FacebookStrategy, () => {
 
 			const redirectUrl = new URL(location);
 
-			expect(redirectUrl.searchParams.get('scope')).toBe('custom');
+			expect(redirectUrl.searchParams.get('scope')).toBe('ads_read');
 		}
 	});
 
-	test('should have the scope `public_profile,email` as default', async () => {
+	test('should have the default scope', async () => {
 		const strategy = new FacebookStrategy(
 			{
 				clientID: 'CLIENT_ID',
@@ -64,9 +64,7 @@ describe(FacebookStrategy, () => {
 
 			const redirectUrl = new URL(location);
 
-			expect(redirectUrl.searchParams.get('scope')).toBe(
-				'public_profile,email',
-			);
+			expect(redirectUrl.searchParams.get('scope')).toBe(FacebookDefaultScopes.join(FacebookScopeSeperator));
 		}
 	});
 

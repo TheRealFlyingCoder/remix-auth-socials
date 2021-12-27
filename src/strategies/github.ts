@@ -7,11 +7,46 @@ import {
 } from 'remix-auth-oauth2';
 import { SocialsProvider } from '..';
 
+export type GitHubScope =
+	| 'repo'
+	| 'repo:status'
+	| 'repo_deployment'
+	| 'public_repo'
+	| 'repo:invite'
+	| 'security_events'
+	| 'admin:repo_hook'
+	| 'write:repo_hook'
+	| 'read:repo_hook'
+	| 'admin:org'
+	| 'write:org'
+	| 'read:org'
+	| 'admin:public_key'
+	| 'write:public_key'
+	| 'read:public_key'
+	| 'admin:org_hook'
+	| 'gist'
+	| 'notifications'
+	| 'user'
+	| 'read:user'
+	| 'user:email'
+	| 'user:follow'
+	| 'delete_repo'
+	| 'write:discussion'
+	| 'read:discussion'
+	| 'write:packages'
+	| 'read:packages'
+	| 'delete:packages'
+	| 'admin:gpg_key'
+	| 'write:gpg_key'
+	| 'read:gpg_key'
+	| 'codespace'
+	| 'workflow';
+
 export interface GitHubStrategyOptions {
 	clientID: string;
 	clientSecret: string;
 	callbackURL: string;
-	scope?: string;
+	scope?: GitHubScope[];
 	allowSignup?: boolean;
 	userAgent?: string;
 }
@@ -78,6 +113,9 @@ export interface GitHubExtraParams extends Record<string, string | number> {
 	tokenType: string;
 }
 
+export const GitHubDefaultScopes: GitHubScope[] = ['user'];
+export const GitHubScopeSeperator = ' ';
+
 export class GitHubStrategy<User> extends OAuth2Strategy<
 	User,
 	GitHubProfile,
@@ -85,7 +123,7 @@ export class GitHubStrategy<User> extends OAuth2Strategy<
 > {
 	name = SocialsProvider.GITHUB;
 
-	private scope: string;
+	private scope: GitHubScope[];
 	private allowSignup: boolean;
 	private userAgent: string;
 	private userInfoURL = 'https://api.github.com/user';
@@ -114,14 +152,14 @@ export class GitHubStrategy<User> extends OAuth2Strategy<
 			},
 			verify,
 		);
-		this.scope = scope ?? 'email';
+		this.scope = scope || ['user'];
 		this.allowSignup = allowSignup ?? true;
 		this.userAgent = userAgent ?? 'Remix Auth';
 	}
 
 	protected authorizationParams(): URLSearchParams {
 		return new URLSearchParams({
-			scope: this.scope,
+			scope: this.scope.join(GitHubScopeSeperator),
 			allow_signup: String(this.allowSignup),
 		});
 	}

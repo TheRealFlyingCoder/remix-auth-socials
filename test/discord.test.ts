@@ -1,5 +1,5 @@
 import { createCookieSessionStorage } from '@remix-run/server-runtime';
-import { DiscordStrategy } from '../src';
+import { DiscordDefaultScopes, DiscordScopeSeperator, DiscordStrategy } from '../src';
 
 describe(DiscordStrategy, () => {
 	const verify = jest.fn();
@@ -17,7 +17,7 @@ describe(DiscordStrategy, () => {
 				clientID: 'CLIENT_ID',
 				clientSecret: 'CLIENT_SECRET',
 				callbackURL: 'https://example.app/callback',
-				scope: 'custom',
+				scope: ['guilds'],
 			},
 			verify,
 		);
@@ -36,11 +36,11 @@ describe(DiscordStrategy, () => {
 
 			const redirectUrl = new URL(location);
 
-			expect(redirectUrl.searchParams.get('scope')).toBe('custom');
+			expect(redirectUrl.searchParams.get('scope')).toBe('guilds');
 		}
 	});
 
-	test('should have the scope `identify email` as default', async () => {
+	test('should have the default scope', async () => {
 		const strategy = new DiscordStrategy(
 			{
 				clientID: 'CLIENT_ID',
@@ -64,9 +64,7 @@ describe(DiscordStrategy, () => {
 
 			const redirectUrl = new URL(location);
 
-			expect(redirectUrl.searchParams.get('scope')).toBe(
-				'identify email',
-			);
+			expect(redirectUrl.searchParams.get('scope')).toBe(DiscordDefaultScopes.join(DiscordScopeSeperator));
 		}
 	});
 

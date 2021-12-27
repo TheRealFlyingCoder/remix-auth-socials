@@ -1,5 +1,5 @@
 import { createCookieSessionStorage } from '@remix-run/server-runtime';
-import { GoogleStrategy } from '../src';
+import { GoogleDefaultScopes, GoogleScopeSeperator, GoogleStrategy } from '../src';
 
 describe(GoogleStrategy, () => {
 	const verify = jest.fn();
@@ -17,7 +17,7 @@ describe(GoogleStrategy, () => {
 				clientID: 'CLIENT_ID',
 				clientSecret: 'CLIENT_SECRET',
 				callbackURL: 'https://example.app/callback',
-				scope: 'custom',
+				scope: ['profile'],
 			},
 			verify,
 		);
@@ -36,7 +36,7 @@ describe(GoogleStrategy, () => {
 
 			const redirectUrl = new URL(location);
 
-			expect(redirectUrl.searchParams.get('scope')).toBe('custom');
+			expect(redirectUrl.searchParams.get('scope')).toBe('profile');
 		}
 	});
 
@@ -50,7 +50,7 @@ describe(GoogleStrategy, () => {
 			verify,
 		);
 
-		const request = new Request('https://example.app/auth/github');
+		const request = new Request('https://example.app/auth/google');
 
 		try {
 			await strategy.authenticate(request, sessionStorage, {
@@ -65,7 +65,7 @@ describe(GoogleStrategy, () => {
 			const redirectUrl = new URL(location);
 
 			expect(redirectUrl.searchParams.get('scope')).toBe(
-				'openid profile email',
+				GoogleDefaultScopes.join(GoogleScopeSeperator),
 			);
 		}
 	});

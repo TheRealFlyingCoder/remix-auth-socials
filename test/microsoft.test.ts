@@ -1,7 +1,7 @@
 import { createCookieSessionStorage } from '@remix-run/server-runtime';
-import { GitHubDefaultScopes, GitHubScopeSeperator, GitHubStrategy } from '../src';
+import { MicrosoftDefaultScopes, MicrosoftScopeSeperator, MicrosoftStrategy } from '../src';
 
-export const GithubTest = describe(GitHubStrategy, () => {
+describe(MicrosoftStrategy, () => {
 	const verify = jest.fn();
 	const sessionStorage = createCookieSessionStorage({
 		cookie: { secrets: ['s3cr3t'] },
@@ -12,17 +12,17 @@ export const GithubTest = describe(GitHubStrategy, () => {
 	});
 
 	test('should allow changing the scope', async () => {
-		const strategy = new GitHubStrategy(
+		const strategy = new MicrosoftStrategy(
 			{
 				clientID: 'CLIENT_ID',
 				clientSecret: 'CLIENT_SECRET',
 				callbackURL: 'https://example.app/callback',
-				scope: ['gist'],
+				scope: ['offline_access'],
 			},
 			verify,
 		);
 
-		const request = new Request('https://example.app/auth/github');
+		const request = new Request('https://example.app/auth/microsoft');
 
 		try {
 			await strategy.authenticate(request, sessionStorage, {
@@ -36,12 +36,12 @@ export const GithubTest = describe(GitHubStrategy, () => {
 
 			const redirectUrl = new URL(location);
 
-			expect(redirectUrl.searchParams.get('scope')).toBe('gist');
+			expect(redirectUrl.searchParams.get('scope')).toBe('offline_access');
 		}
 	});
 
 	test('should have the default scope', async () => {
-		const strategy = new GitHubStrategy(
+		const strategy = new MicrosoftStrategy(
 			{
 				clientID: 'CLIENT_ID',
 				clientSecret: 'CLIENT_SECRET',
@@ -50,7 +50,7 @@ export const GithubTest = describe(GitHubStrategy, () => {
 			verify,
 		);
 
-		const request = new Request('https://example.app/auth/github');
+		const request = new Request('https://example.app/auth/microsoft');
 
 		try {
 			await strategy.authenticate(request, sessionStorage, {
@@ -64,12 +64,12 @@ export const GithubTest = describe(GitHubStrategy, () => {
 
 			const redirectUrl = new URL(location);
 
-			expect(redirectUrl.searchParams.get('scope')).toBe(GitHubDefaultScopes.join(GitHubScopeSeperator));
+			expect(redirectUrl.searchParams.get('scope')).toBe(MicrosoftDefaultScopes.join(MicrosoftScopeSeperator));
 		}
 	});
 
 	test('should correctly format the authorization URL', async () => {
-		const strategy = new GitHubStrategy(
+		const strategy = new MicrosoftStrategy(
 			{
 				clientID: 'CLIENT_ID',
 				clientSecret: 'CLIENT_SECRET',
@@ -78,7 +78,7 @@ export const GithubTest = describe(GitHubStrategy, () => {
 			verify,
 		);
 
-		const request = new Request('https://example.app/auth/github');
+		const request = new Request('https://example.app/auth/microsoft');
 
 		try {
 			await strategy.authenticate(request, sessionStorage, {
@@ -93,8 +93,8 @@ export const GithubTest = describe(GitHubStrategy, () => {
 
 			const redirectUrl = new URL(location);
 
-			expect(redirectUrl.hostname).toBe('github.com');
-			expect(redirectUrl.pathname).toBe('/login/oauth/authorize');
+			expect(redirectUrl.hostname).toBe('login.microsoftonline.com');
+			expect(redirectUrl.pathname).toBe('/common/oauth2/v2.0/authorize');
 		}
 	});
 });

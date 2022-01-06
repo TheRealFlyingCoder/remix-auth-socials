@@ -1,8 +1,9 @@
-export * from './strategies/discord';
-export * from './strategies/google';
-export * from './strategies/github';
+export * from 'remix-auth-discord';
+export * from 'remix-auth-github';
+export * from 'remix-auth-google';
+export * from 'remix-auth-microsoft';
+
 export * from './strategies/facebook';
-export * from './strategies/microsoft';
 
 export enum SocialsProvider {
     GOOGLE = 'google',

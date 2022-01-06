@@ -6,12 +6,12 @@
 
 Current strategies:
 
--   Discord
--   Github
--   Google
+-   [Discord](https://github.com/JonnyBnator/remix-auth-discord)
 -   Facebook
--   Microsoft
-  
+-   [GitHub](https://github.com/sergiodxa/remix-auth-github)
+-   [Google](https://github.com/pbteja1998/remix-auth-google)
+-   [Microsoft](https://github.com/juhanakristian/remix-auth-microsoft)
+
 Planned:
 
 -   Twitter
@@ -45,7 +45,7 @@ import { authenticator } from '~/auth.server';
 export let loader: LoaderFunction = () => redirect('/login');
 
 export let action: ActionFunction = ({ request, params }) => {
-  return authenticator.authenticate(params.provider, request);
+	return authenticator.authenticate(params.provider, request);
 };
 ```
 
@@ -55,10 +55,10 @@ import { ActionFunction, LoaderFunction } from 'remix';
 import { authenticator } from '~/auth.server';
 
 export let loader: LoaderFunction = ({ request, params }) => {
-  return authenticator.authenticate(params.provider, request, {
-    successRedirect: '/dashboard',
-    failureRedirect: '/login',
-  });
+	return authenticator.authenticate(params.provider, request, {
+		successRedirect: '/dashboard',
+		failureRedirect: '/login',
+	});
 };
 ```
 
@@ -89,7 +89,9 @@ export default function Login() {
   );
 }
 ```
+
 ### Create the strategy instance
+
 For each social you want to use, you must initialise it in your `auth.server.ts` file.
 
 ```ts

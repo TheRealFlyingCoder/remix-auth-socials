@@ -59,6 +59,10 @@
   },
   "dependencies": {
     "remix-auth": "^3.0.0",
+    "remix-auth-discord": "^1.0.0",
+    "remix-auth-github": "^1.0.0",
+    "remix-auth-google": "^1.0.1",
+    "remix-auth-microsoft": "^1.0.1",
     "remix-auth-oauth2": "^1.0.0"
   }
 }

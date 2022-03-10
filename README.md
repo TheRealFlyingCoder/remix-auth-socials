@@ -186,6 +186,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   const user = await authenticator.isAuthenticated(request, {
     successRedirect: "/dashboard",
   });
+  return user;
 };
 
 export default function Index() {

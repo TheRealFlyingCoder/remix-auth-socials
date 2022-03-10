@@ -39,8 +39,8 @@ To begin we will set up dynamic routes, that can handle each social on the fly
 
 ```tsx
 // app/routes/auth/$provider.tsx
-import { ActionFunction, LoaderFunction } from 'remix';
-import { authenticator } from '~/auth.server';
+import { ActionFunction, LoaderFunction, redirect } from 'remix';
+import { authenticator } from '~/server/auth.server';
 
 export let loader: LoaderFunction = () => redirect('/login');
 
@@ -52,7 +52,7 @@ export let action: ActionFunction = ({ request, params }) => {
 ```tsx
 // app/routes/auth/$provider.callback.tsx
 import { ActionFunction, LoaderFunction } from 'remix';
-import { authenticator } from '~/auth.server';
+import { authenticator } from '~/server/auth.server';
 
 export let loader: LoaderFunction = ({ request, params }) => {
   return authenticator.authenticate(params.provider, request, {
@@ -66,10 +66,11 @@ Now you are free to include social buttons on the login page however you like
 
 ```tsx
 // app/routes/login.tsx
-import { SocialProvider } from 'remix-auth-socials';
+import { Form } from 'remix';
+import { SocialsProvider } from 'remix-auth-socials';
 
 interface SocialButtonProps {
-  provider: SocialProvider,
+  provider: SocialsProvider,
   label: string
 }
 
@@ -81,34 +82,52 @@ const SocialButton: React.FC<SocialButtonProps> = ({ provider, label }) => (
 
 export default function Login() {
   return (
-    <SocialButton provider={SocialProvider.DISCORD} label="Login with Discord" />
-    <SocialButton provider={SocialProvider.GITHUB} label="Login with Github" />
-    <SocialButton provider={SocialProvider.GOOGLE} label="Login with Google" />
-    <SocialButton provider={SocialProvider.FACEBOOK} label="Login with Facebook" />
-    <SocialButton provider={SocialProvider.MICROSOFT} label="Login with Microsoft" />
+    <>
+      <SocialButton provider={SocialsProvider.DISCORD} label="Login with Discord" />
+      <SocialButton provider={SocialsProvider.GITHUB} label="Login with Github" />
+      <SocialButton provider={SocialsProvider.GOOGLE} label="Login with Google" />
+      <SocialButton provider={SocialsProvider.FACEBOOK} label="Login with Facebook" />
+      <SocialButton provider={SocialsProvider.MICROSOFT} label="Login with Microsoft" />
+    </>
   );
 }
 ```
+
+You will also need a logout route
+
+```ts
+// app/routes/logout.tsx
+import { ActionFunction } from "remix";
+import { authenticator } from "~/server/auth.server";
+
+export let action: ActionFunction = async ({ request, params }) => {
+  await authenticator.logout(request, { redirectTo: "/" });
+};
+```
+
 ### Create the strategy instance
 For each social you want to use, you must initialise it in your `auth.server.ts` file.
 
 ```ts
 // app/server/auth.server.ts
-import { GoogleStrategy, FacebookStrategy, SocialProvider } from "remix-auth-socials";
-import { findOrCreateOauth2User } from "./db.server.ts";
+import { Authenticator } from "remix-auth";
+import { GoogleStrategy, FacebookStrategy, SocialsProvider } from "remix-auth-socials";
+import { sessionStorage } from "~/services/session.server";
 
-// Create an instance of the authenticator, pass a generic <User> type which the
-// strategies will return (this will be stored in the session)
-export let authenticator = new Authenticator<User>(sessionStorage, { sessionErrorKey });
+// Create an instance of the authenticator
+export let authenticator = new Authenticator(sessionStorage, { sessionKey: '_session' });
+// You may specify a <User> type which the strategies will return (this will be stored in the session)
+// export let authenticator = new Authenticator<User>(sessionStorage, { sessionKey: '_session' });
 
 authenticator.use(new GoogleStrategy(
   {
     clientID: "YOUR_CLIENT_ID",
     clientSecret: "YOUR_CLIENT_SECRET",
-    callbackURL: `https://example.com/auth/${SocialProvider.GOOGLE}/callback`;
+    callbackURL: `http://localhost:3333/auth/${SocialsProvider.GOOGLE}/callback`
   },
   async ({ profile }) => {
-    return findOrCreateOauth2User(profile);
+    // here you would find or create a user in your database
+    return profile;
   }
 ));
 
@@ -116,12 +135,67 @@ authenticator.use(new FacebookStrategy(
   {
     clientID: "YOUR_CLIENT_ID",
     clientSecret: "YOUR_CLIENT_SECRET",
-    callbackURL: `https://example.com/auth/${SocialProvider.FACEBOOK}/callback`;
+    callbackURL: `https://localhost:3333/auth/${SocialsProvider.FACEBOOK}/callback`
   },
   async ({ profile }) => {
-    return findOrCreateOauth2User(profile);
+    // here you would find or create a user in your database
+    return profile;
   }
 ));
+```
+
+### Add a protected route and an automatic success redirect
+Here's an example of a protected route
+
+```tsx
+// app/routes/dashboard.tsx
+import { useLoaderData, Form, LoaderFunction } from "remix";
+import { authenticator } from "~/server/auth.server";
+
+export let loader: LoaderFunction = async ({ request, params }) => {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/",
+  });
+
+  return { user };
+};
+
+export default function Dashboard() {
+  const { user } = useLoaderData();
+
+  return (
+    <div>
+      <h1>Welcome {user.displayName}!</h1>
+      <p>This is a protected page</p>
+      <Form action="/logout" method="post">
+        <button>Logout</button>
+      </Form>
+    </div>
+  );
+};
+```
+
+You might also want your index route to redirect to the dashboard for logged in users.
+
+```tsx
+// app/routes/index.tsx
+import { useLoaderData, LoaderFunction } from "remix";
+import { authenticator } from "~/server/auth.server";
+
+export let loader: LoaderFunction = async ({ request, params }) => {
+  const user = await authenticator.isAuthenticated(request, {
+    successRedirect: "/dashboard",
+  });
+};
+
+export default function Index() {
+  return (
+    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
+      <h1>Welcome!</h1>
+      <p><a href="/login">Please log in</a></p>
+    </div>
+  );
+}
 ```
 
 TODO: Create readme doc for each strategy to show options and link here

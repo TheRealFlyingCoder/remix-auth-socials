@@ -217,7 +217,7 @@ export class FacebookStrategy<User> extends OAuth2Strategy<
 				familyName: raw.last_name,
 			},
 			emails: [{ value: raw.email }],
-			photos: [{ value: raw.picture }],
+			photos: [{ value: raw.picture.data.url }],
 			_json: raw,
 		};
 		return profile;

@@ -84,6 +84,7 @@ export type AdditionalFacebookProfileField =
 	| 'name_format'
 	| 'payment_pricepoints'
 	| 'political'
+	| 'picture'
 	| 'profile_pic'
 	| 'quotes'
 	| 'relationship_status'
@@ -103,6 +104,7 @@ export const baseProfileFields = [
 	'first_name',
 	'middle_name',
 	'last_name',
+	'picture',
 ];
 
 export const FacebookDefaultScopes: FacebookScope[] = ['public_profile', 'email'];
@@ -204,6 +206,7 @@ export class FacebookStrategy<User> extends OAuth2Strategy<
 			},
 		);
 		const raw: FacebookProfile['_json'] = await response.json();
+		// Default Public Profile Fields: https://developers.facebook.com/docs/graph-api/reference/user/#fields
 		const profile: FacebookProfile = {
 			provider: SocialsProvider.FACEBOOK,
 			displayName: raw.name,
@@ -214,6 +217,7 @@ export class FacebookStrategy<User> extends OAuth2Strategy<
 				familyName: raw.last_name,
 			},
 			emails: [{ value: raw.email }],
+			photos: [{ value: raw.picture.data.url }],
 			_json: raw,
 		};
 		return profile;

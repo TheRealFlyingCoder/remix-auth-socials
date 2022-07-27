@@ -39,22 +39,26 @@ To begin we will set up dynamic routes, that can handle each social on the fly
 
 ```tsx
 // app/routes/auth/$provider.tsx
-import { ActionFunction, LoaderFunction, redirect } from 'remix';
+import { ActionFunction, LoaderFunction, redirect } from '@remix-run/node';
+import invariant from 'tiny-invariant';
 import { authenticator } from '~/server/auth.server';
 
 export let loader: LoaderFunction = () => redirect('/login');
 
 export let action: ActionFunction = ({ request, params }) => {
+  invariant(params.provider, "params.provider should be a string")
   return authenticator.authenticate(params.provider, request);
 };
 ```
 
 ```tsx
 // app/routes/auth/$provider.callback.tsx
-import { ActionFunction, LoaderFunction } from 'remix';
+import { LoaderFunction } from '@remix-run/node';
+import invariant from 'tiny-invariant';
 import { authenticator } from '~/server/auth.server';
 
 export let loader: LoaderFunction = ({ request, params }) => {
+  invariant(params.provider, "params.provider should be a string")
   return authenticator.authenticate(params.provider, request, {
     successRedirect: '/dashboard',
     failureRedirect: '/login',
@@ -66,7 +70,7 @@ Now you are free to include social buttons on the login page however you like
 
 ```tsx
 // app/routes/login.tsx
-import { Form } from 'remix';
+import { Form } from '@remix-run/react';
 import { SocialsProvider } from 'remix-auth-socials';
 
 interface SocialButtonProps {
@@ -97,11 +101,11 @@ You will also need a logout route
 
 ```ts
 // app/routes/logout.tsx
-import { ActionFunction } from "remix";
+import { ActionFunction } from "@remix-run/node";
 import { authenticator } from "~/server/auth.server";
 
 export let action: ActionFunction = async ({ request, params }) => {
-  await authenticator.logout(request, { redirectTo: "/" });
+    await authenticator.logout(request, { redirectTo: "/" });
 };
 ```
 
@@ -112,7 +116,7 @@ For each social you want to use, you must initialise it in your `auth.server.ts`
 // app/server/auth.server.ts
 import { Authenticator } from "remix-auth";
 import { GoogleStrategy, FacebookStrategy, SocialsProvider } from "remix-auth-socials";
-import { sessionStorage } from "~/services/session.server";
+import { sessionStorage } from "./session.server";
 
 // Create an instance of the authenticator
 export let authenticator = new Authenticator(sessionStorage, { sessionKey: '_session' });
@@ -121,8 +125,8 @@ export let authenticator = new Authenticator(sessionStorage, { sessionKey: '_ses
 
 authenticator.use(new GoogleStrategy(
   {
-    clientID: "YOUR_CLIENT_ID",
-    clientSecret: "YOUR_CLIENT_SECRET",
+    clientID: "107822922492186567430",
+    clientSecret: "3594d0aae2394dbd501258ca5585437ef27e0d5c",
     callbackURL: `http://localhost:3333/auth/${SocialsProvider.GOOGLE}/callback`
   },
   async ({ profile }) => {
@@ -149,7 +153,9 @@ Here's an example of a protected route
 
 ```tsx
 // app/routes/dashboard.tsx
-import { useLoaderData, Form, LoaderFunction } from "remix";
+import { LoaderFunction } from "@remix-run/node";
+import { useLoaderData, Form } from "@remix-run/react";
+
 import { authenticator } from "~/server/auth.server";
 
 export let loader: LoaderFunction = async ({ request, params }) => {
@@ -179,7 +185,7 @@ You might also want your index route to redirect to the dashboard for logged in 
 
 ```tsx
 // app/routes/index.tsx
-import { useLoaderData, LoaderFunction } from "remix";
+import {  LoaderFunction } from "@remix-run/node";
 import { authenticator } from "~/server/auth.server";
 
 export let loader: LoaderFunction = async ({ request, params }) => {
@@ -197,6 +203,26 @@ export default function Index() {
     </div>
   );
 }
+```
+
+If session storage has not already been created then you will need to create one
+
+```tsx
+// app/server/session.server.ts
+import { createCookieSessionStorage } from "@remix-run/node";
+
+export let sessionStorage = createCookieSessionStorage({
+  cookie: {
+    name: "_session",
+    sameSite: "lax",
+    path: "/",
+    httpOnly: true,
+    secrets: ["s3cr3t"],
+    secure: process.env.NODE_ENV === "production",
+  },
+});
+
+export let { getSession, commitSession, destroySession } = sessionStorage;
 ```
 
 TODO: Create readme doc for each strategy to show options and link here

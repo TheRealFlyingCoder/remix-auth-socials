@@ -40,13 +40,11 @@ To begin we will set up dynamic routes, that can handle each social on the fly
 ```tsx
 // app/routes/auth/$provider.tsx
 import { ActionFunction, LoaderFunction, redirect } from '@remix-run/node';
-import invariant from 'tiny-invariant';
 import { authenticator } from '~/server/auth.server';
 
 export let loader: LoaderFunction = () => redirect('/login');
 
 export let action: ActionFunction = ({ request, params }) => {
-  invariant(params.provider, "params.provider should be a string")
   return authenticator.authenticate(params.provider, request);
 };
 ```
@@ -54,11 +52,9 @@ export let action: ActionFunction = ({ request, params }) => {
 ```tsx
 // app/routes/auth/$provider.callback.tsx
 import { LoaderFunction } from '@remix-run/node';
-import invariant from 'tiny-invariant';
 import { authenticator } from '~/server/auth.server';
 
 export let loader: LoaderFunction = ({ request, params }) => {
-  invariant(params.provider, "params.provider should be a string")
   return authenticator.authenticate(params.provider, request, {
     successRedirect: '/dashboard',
     failureRedirect: '/login',
@@ -125,8 +121,8 @@ export let authenticator = new Authenticator(sessionStorage, { sessionKey: '_ses
 
 authenticator.use(new GoogleStrategy(
   {
-    clientID: "107822922492186567430",
-    clientSecret: "3594d0aae2394dbd501258ca5585437ef27e0d5c",
+    clientID: "YOUR_CLIENT_ID",
+    clientSecret: "YOUR_CLIENT_SECRET",
     callbackURL: `http://localhost:3333/auth/${SocialsProvider.GOOGLE}/callback`
   },
   async ({ profile }) => {

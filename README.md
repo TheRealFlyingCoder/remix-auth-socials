@@ -39,22 +39,22 @@ To begin we will set up dynamic routes, that can handle each social on the fly
 
 ```tsx
 // app/routes/auth/$provider.tsx
-import { ActionFunction, LoaderFunction, redirect } from 'remix';
+import { ActionArgs, redirect } from "@remix-run/node"
 import { authenticator } from '~/server/auth.server';
 
-export let loader: LoaderFunction = () => redirect('/login');
+export let loader = () => redirect('/login');
 
-export let action: ActionFunction = ({ request, params }) => {
+export let action = ({ request, params }: ActionArgs) => {
   return authenticator.authenticate(params.provider, request);
 };
 ```
 
 ```tsx
 // app/routes/auth/$provider.callback.tsx
-import { ActionFunction, LoaderFunction } from 'remix';
+import { LoaderArgs } from "@remix-run/node"
 import { authenticator } from '~/server/auth.server';
 
-export let loader: LoaderFunction = ({ request, params }) => {
+export let loader = ({ request, params }: LoaderArgs) => {
   return authenticator.authenticate(params.provider, request, {
     successRedirect: '/dashboard',
     failureRedirect: '/login',
@@ -66,7 +66,7 @@ Now you are free to include social buttons on the login page however you like
 
 ```tsx
 // app/routes/login.tsx
-import { Form } from 'remix';
+import { Form } from "@remix-run/react"
 import { SocialsProvider } from 'remix-auth-socials';
 
 interface SocialButtonProps {
@@ -97,10 +97,10 @@ You will also need a logout route
 
 ```ts
 // app/routes/logout.tsx
-import { ActionFunction } from "remix";
+import { ActionArgs } from "@remix-run/node"
 import { authenticator } from "~/server/auth.server";
 
-export let action: ActionFunction = async ({ request, params }) => {
+export let action = async ({ request, params }: ActionArgs) => {
   await authenticator.logout(request, { redirectTo: "/" });
 };
 ```
@@ -149,10 +149,11 @@ Here's an example of a protected route
 
 ```tsx
 // app/routes/dashboard.tsx
-import { useLoaderData, Form, LoaderFunction } from "remix";
+import { useLoaderData, Form } from "@remix-run/react";
+import { LoaderArgs } from "@remix-run/node"
 import { authenticator } from "~/server/auth.server";
 
-export let loader: LoaderFunction = async ({ request, params }) => {
+export let loader = async ({ request, params }: LoaderArgs) => {
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/",
   });
@@ -179,10 +180,11 @@ You might also want your index route to redirect to the dashboard for logged in 
 
 ```tsx
 // app/routes/index.tsx
-import { useLoaderData, LoaderFunction } from "remix";
+import { useLoaderData } from "@remix-run/react";
+import { LoaderArgs } from "@remix-run/node"
 import { authenticator } from "~/server/auth.server";
 
-export let loader: LoaderFunction = async ({ request, params }) => {
+export let loader = async ({ request, params }: LoaderArgs) => {
   const user = await authenticator.isAuthenticated(request, {
     successRedirect: "/dashboard",
   });

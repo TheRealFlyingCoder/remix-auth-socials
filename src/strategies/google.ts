@@ -22,6 +22,8 @@ export type GoogleStrategyOptions = {
 	accessType?: 'online' | 'offline';
 	includeGrantedScopes?: boolean;
 	prompt?: 'none' | 'consent' | 'select_account';
+	hd?: string;
+	loginHint?: string
 };
 
 export type GoogleProfile = {
@@ -71,6 +73,10 @@ export class GoogleStrategy<User> extends OAuth2Strategy<
 
 	private readonly includeGrantedScopes: boolean;
 
+	private readonly hd?: string
+
+	private readonly loginHint?: string
+
 	private readonly userInfoURL =
 		'https://www.googleapis.com/oauth2/v3/userinfo';
 
@@ -83,6 +89,8 @@ export class GoogleStrategy<User> extends OAuth2Strategy<
 			accessType,
 			includeGrantedScopes,
 			prompt,
+			hd,
+			loginHint,
 		}: GoogleStrategyOptions,
 		verify: StrategyVerifyCallback<
 			User,
@@ -104,6 +112,8 @@ export class GoogleStrategy<User> extends OAuth2Strategy<
 		this.accessType = accessType ?? 'online';
 		this.includeGrantedScopes = includeGrantedScopes ?? false;
 		this.prompt = prompt;
+		this.hd = hd;
+		this.loginHint = loginHint;
 	}
 
 	protected authorizationParams(): URLSearchParams {
@@ -114,6 +124,12 @@ export class GoogleStrategy<User> extends OAuth2Strategy<
 		});
 		if (this.prompt) {
 			params.set('prompt', this.prompt);
+		}
+		if (this.hd) {
+			params.set('hd', this.hd)
+		}
+		if (this.loginHint) {
+			params.set('login_hint', this.loginHint)
 		}
 		return params;
 	}

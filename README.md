@@ -2,23 +2,25 @@
 
 > A collection of Remix Auth strategies for Oauth2 Social logins.
 
-👷 If you are interested in creating one of the planned strategies, or maintaining an existing one reach out! 👷
+It's rare to see only one social login button, and no one likes a big package.json so here we are 👀
 
-Current strategies:
+This package re-exports community packages after ensuring they have strong types, and specific exports that give you a consistent experience.
 
--   Discord
--   Github
--   Google
--   Facebook
--   Microsoft
-  
-Planned:
+## The Collection:
 
--   Twitter
--   Apple
--   LinkedIn
--   Instagram
--   Reddit
+Please visit the repo's of each package to understand any quirks about their usage.
+
+[remix-auth-discord](https://github.com/JonnyBnator/remix-auth-discord) - By [Jonny](https://github.com/JonnyBnator)
+
+[remix-auth-facebook](https://github.com/manosim/remix-auth-facebook) - By [Manos](https://github.com/manosim)
+
+[remix-auth-github](https://github.com/sergiodxa/remix-auth-github) - By [Sergio](https://github.com/sergiodxa)
+
+[remix-auth-google](https://github.com/pbteja1998/remix-auth-google) - By [Bhanu](https://github.com/pbteja1998)
+
+[remix-auth-microsoft](https://github.com/juhanakristian/remix-auth-microsoft) - By [Juhana](https://github.com/juhanakristian)
+
+[remix-auth-twitter](https://github.com/na2hiro/remix-auth-twitter) - By [na2hiro](https://github.com/na2hiro)
 
 ## Supported runtimes
 
@@ -31,11 +33,10 @@ All strategies will support cloudflare
 
 ## How to use
 
-The simplicity of this package is that all the included socials behave the same.
 
 ### Setup your routes
 
-To begin we will set up dynamic routes, that can handle each social on the fly
+To begin we will set up a dynamic route, that can handle each social on the fly
 
 ```tsx
 // app/routes/auth/$provider.tsx
@@ -119,11 +120,15 @@ export let authenticator = new Authenticator(sessionStorage, { sessionKey: '_ses
 // You may specify a <User> type which the strategies will return (this will be stored in the session)
 // export let authenticator = new Authenticator<User>(sessionStorage, { sessionKey: '_session' });
 
+const getCallback = (provider: SocialsProvider) => {
+  return `http://localhost:3333/auth/${provider}/callback`
+} 
+
 authenticator.use(new GoogleStrategy(
   {
     clientID: "YOUR_CLIENT_ID",
     clientSecret: "YOUR_CLIENT_SECRET",
-    callbackURL: `http://localhost:3333/auth/${SocialsProvider.GOOGLE}/callback`
+    callbackURL: getCallback(SocialsProvider.GOOGLE)
   },
   async ({ profile }) => {
     // here you would find or create a user in your database
@@ -135,12 +140,9 @@ authenticator.use(new FacebookStrategy(
   {
     clientID: "YOUR_CLIENT_ID",
     clientSecret: "YOUR_CLIENT_SECRET",
-    callbackURL: `https://localhost:3333/auth/${SocialsProvider.FACEBOOK}/callback`
+    callbackURL: getCallback(SocialsProvider.FACEBOOK)
   },
-  async ({ profile }) => {
-    // here you would find or create a user in your database
-    return profile;
-  }
+  async ({ profile }) => {}
 ));
 ```
 
@@ -200,5 +202,3 @@ export default function Index() {
   );
 }
 ```
-
-TODO: Create readme doc for each strategy to show options and link here

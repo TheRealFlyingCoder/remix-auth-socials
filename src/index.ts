@@ -3,6 +3,7 @@ export * from './strategies/google';
 export * from './strategies/github';
 export * from './strategies/facebook';
 export * from './strategies/microsoft';
+export * from './strategies/twitter';
 
 export enum SocialsProvider {
     GOOGLE = 'google',

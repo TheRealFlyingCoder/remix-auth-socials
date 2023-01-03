@@ -8,7 +8,7 @@ This package re-exports community packages after ensuring they have strong types
 
 ## The Collection:
 
-Please visit the repo's of each package to understand any quirks about their usage.
+Please visit the repo's of each package to understand any quirks about their usage, and raise issues.
 
 [remix-auth-discord](https://github.com/JonnyBnator/remix-auth-discord) - By [Jonny](https://github.com/JonnyBnator)
 

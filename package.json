@@ -52,12 +52,12 @@
   },
   "dependencies": {
     "remix-auth": "^3.4.0",
-    "remix-auth-discord": "^1.1.2",
+    "remix-auth-discord": "^1.2.0",
     "remix-auth-facebook": "^0.0.8",
     "remix-auth-github": "^1.2.1",
     "remix-auth-google": "^1.2.0",
     "remix-auth-linkedin": "^1.0.1",
-    "remix-auth-microsoft": "^1.0.3",
+    "remix-auth-microsoft": "^2.0.0",
     "remix-auth-oauth2": "^1.5.0",
     "remix-auth-twitter": "^0.1.1"
   }

@@ -4,14 +4,15 @@
 
 It's rare to see only one social login button, and no one likes a big package.json so here we are 👀
 
-This package re-exports community packages after ensuring they have strong types, and specific exports that give you a consistent experience.
+Remix auth socials collates community Oauth packages in a way that allows you to set up multiple social logins with ease.
 
 ## The Collection:
 
-Please visit the repo's of each package to understand any quirks about their usage, and raise issues.
+Please visit the repo's of each package to understand the specifics on their usage, and raise issues.
 
 [remix-auth-discord](https://github.com/JonnyBnator/remix-auth-discord) - By [Jonny](https://github.com/JonnyBnator)
 
+// Awaiting my [Pull Request](https://github.com/manosim/remix-auth-facebook/pull/1) so expect a different user experience for now
 [remix-auth-facebook](https://github.com/manosim/remix-auth-facebook) - By [Manos](https://github.com/manosim)
 
 [remix-auth-github](https://github.com/sergiodxa/remix-auth-github) - By [Sergio](https://github.com/sergiodxa)
@@ -195,7 +196,7 @@ export let loader = async ({ request, params }: LoaderArgs) => {
 
 export default function Index() {
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
+    <div>
       <h1>Welcome!</h1>
       <p><a href="/login">Please log in</a></p>
     </div>

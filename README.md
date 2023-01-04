@@ -165,7 +165,7 @@ export let loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function Dashboard() {
-  const { user } = useLoaderData();
+  const { user } = useLoaderData<typeof loader>();
 
   return (
     <div>

@@ -15,9 +15,7 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
-    "build": "tsc --project tsconfig.json",
-    "typecheck": "tsc --project tsconfig.json --noEmit",
-    "lint": "eslint --ext .ts src/"
+    "build": "tsc"
   },
   "keywords": [
     "remix",
@@ -45,7 +43,6 @@
     "remix-auth-google": "^1.2.0",
     "remix-auth-linkedin": "^1.0.1",
     "remix-auth-microsoft": "^2.0.0",
-    "remix-auth-oauth2": "^1.5.0",
     "remix-auth-twitter": "^0.1.1"
   }
 }

@@ -37,6 +37,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "remix-auth": "^3.4.0",
     "remix-auth-discord": "^1.2.0",
     "remix-auth-facebook": "^0.0.8",
     "remix-auth-github": "^1.2.1",

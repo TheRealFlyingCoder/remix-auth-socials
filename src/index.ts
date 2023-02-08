@@ -19,3 +19,5 @@ export const SocialsProvider = {
 	MICROSOFT: MicrosoftStrategyDefaultName,
     TWITTER: TwitterStrategyDefaultName
 } as const;
+
+export type SocialsProvider = typeof SocialsProvider[keyof typeof SocialsProvider];

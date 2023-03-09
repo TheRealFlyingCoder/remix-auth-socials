@@ -12,7 +12,6 @@ Please visit the repo's of each package to understand the specifics on their usa
 
 [remix-auth-discord](https://github.com/JonnyBnator/remix-auth-discord) - By [Jonny](https://github.com/JonnyBnator)
 
-// Awaiting my [Pull Request](https://github.com/manosim/remix-auth-facebook/pull/1) so expect a different user experience for now
 [remix-auth-facebook](https://github.com/manosim/remix-auth-facebook) - By [Manos](https://github.com/manosim)
 
 [remix-auth-github](https://github.com/sergiodxa/remix-auth-github) - By [Sergio](https://github.com/sergiodxa)

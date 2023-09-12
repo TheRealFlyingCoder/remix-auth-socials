@@ -10,7 +10,7 @@ export * from './strategies/github';
 export * from './strategies/facebook';
 export * from './strategies/microsoft';
 export * from './strategies/twitter';
-export * from './strategies/linkedlin';
+export * from './strategies/linkedin';
 
 export const SocialsProvider = {
 	DISCORD: DiscordStrategyDefaultName,

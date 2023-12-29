@@ -10,6 +10,7 @@ export * from './strategies/github';
 export * from './strategies/facebook';
 export * from './strategies/microsoft';
 export * from './strategies/twitter';
+export * from './strategies/linkedin';
 
 export const SocialsProvider = {
 	DISCORD: DiscordStrategyDefaultName,
@@ -17,7 +18,9 @@ export const SocialsProvider = {
 	GITHUB: GitHubStrategyDefaultName,
 	GOOGLE: GoogleStrategyDefaultName,
 	MICROSOFT: MicrosoftStrategyDefaultName,
-    TWITTER: TwitterStrategyDefaultName
+	TWITTER: TwitterStrategyDefaultName,
+	LINKEDIN: 'linkedin',
 } as const;
 
-export type SocialsProvider = typeof SocialsProvider[keyof typeof SocialsProvider];
+export type SocialsProvider =
+	typeof SocialsProvider[keyof typeof SocialsProvider];

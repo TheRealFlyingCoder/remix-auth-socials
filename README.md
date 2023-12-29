@@ -22,6 +22,8 @@ Please visit the repo's of each package to understand the specifics on their usa
 
 [remix-auth-twitter](https://github.com/na2hiro/remix-auth-twitter) - By [na2hiro](https://github.com/na2hiro)
 
+[remix-auth-linkedin](https://github.com/Lzok/remix-auth-linkedin) - By [Lzok](https://github.com/Lzok)
+
 ## Supported runtimes
 
 All strategies will support cloudflare
@@ -89,6 +91,7 @@ export default function Login() {
       <SocialButton provider={SocialsProvider.GOOGLE} label="Login with Google" />
       <SocialButton provider={SocialsProvider.FACEBOOK} label="Login with Facebook" />
       <SocialButton provider={SocialsProvider.MICROSOFT} label="Login with Microsoft" />
+      <SocialButton provider={SocialsProvider.LINKEDIN} label="Login with LinkedIn" />
     </>
   );
 }

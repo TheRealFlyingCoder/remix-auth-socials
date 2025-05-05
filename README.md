@@ -2,7 +2,14 @@
 
 WARNING: V3 Drops outdated packages that dont work with RR7. So V3 is considered broken / beta / use at your own risk
 
-I have started the process of updating some and moving them temporarily into the package to provide access to RR7. I dont maintain this super often but if you want to PR one of the others feel free
+I have started the process of updating some and moving them temporarily into the package to provide access to RR7. I dont maintain this super often but if you want to PR one of the others feel free.
+
+Currently Unavailable in V3:
+❌ Discord
+❌ Linkedin
+❌ X / Twitter
+
+Facebook and Google are untested as of yet
 
 > A collection of Remix Auth strategies for Oauth2 Social logins.
 

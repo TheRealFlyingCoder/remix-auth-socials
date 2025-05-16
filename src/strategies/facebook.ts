@@ -76,7 +76,7 @@ export class FacebookStrategy<User> extends OAuth2Strategy<User> {
 		return params;
 	}
 
-	protected async userProfile(accessToken: string): Promise<FacebookProfile> {
+	public async userProfile(accessToken: string): Promise<FacebookProfile> {
 		const requestParams = `?fields=${this.profileFields.join(',')}`;
 		const requestUrl = `${this.userInfoURL}${requestParams}`;
 		const response = await fetch(requestUrl, {
